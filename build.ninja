@@ -34,7 +34,7 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = /home/fernando/Git/sine_nomine/
+cmake_ninja_workdir = /home/fernando/Git/charms/
 # =============================================================================
 # Object build statements for EXECUTABLE target Charms
 
@@ -44,15 +44,21 @@ cmake_ninja_workdir = /home/fernando/Git/sine_nomine/
 
 build cmake_object_order_depends_target_Charms: phony || CMakeFiles/Charms.dir
 
-build CMakeFiles/Charms.dir/main.c.o: C_COMPILER__Charms_ /home/fernando/Git/sine_nomine/main.c || cmake_object_order_depends_target_Charms
+build CMakeFiles/Charms.dir/main.c.o: C_COMPILER__Charms_ /home/fernando/Git/charms/main.c || cmake_object_order_depends_target_Charms
   DEP_FILE = CMakeFiles/Charms.dir/main.c.o.d
-  INCLUDES = -I/home/fernando/Git/sine_nomine/include
+  INCLUDES = -I/home/fernando/Git/charms/include
   OBJECT_DIR = CMakeFiles/Charms.dir
   OBJECT_FILE_DIR = CMakeFiles/Charms.dir
 
-build CMakeFiles/Charms.dir/src/terminfo.c.o: C_COMPILER__Charms_ /home/fernando/Git/sine_nomine/src/terminfo.c || cmake_object_order_depends_target_Charms
+build CMakeFiles/Charms.dir/src/charm.c.o: C_COMPILER__Charms_ /home/fernando/Git/charms/src/charm.c || cmake_object_order_depends_target_Charms
+  DEP_FILE = CMakeFiles/Charms.dir/src/charm.c.o.d
+  INCLUDES = -I/home/fernando/Git/charms/include
+  OBJECT_DIR = CMakeFiles/Charms.dir
+  OBJECT_FILE_DIR = CMakeFiles/Charms.dir/src
+
+build CMakeFiles/Charms.dir/src/terminfo.c.o: C_COMPILER__Charms_ /home/fernando/Git/charms/src/terminfo.c || cmake_object_order_depends_target_Charms
   DEP_FILE = CMakeFiles/Charms.dir/src/terminfo.c.o.d
-  INCLUDES = -I/home/fernando/Git/sine_nomine/include
+  INCLUDES = -I/home/fernando/Git/charms/include
   OBJECT_DIR = CMakeFiles/Charms.dir
   OBJECT_FILE_DIR = CMakeFiles/Charms.dir/src
 
@@ -64,7 +70,7 @@ build CMakeFiles/Charms.dir/src/terminfo.c.o: C_COMPILER__Charms_ /home/fernando
 #############################################
 # Link the executable Charms
 
-build Charms: C_EXECUTABLE_LINKER__Charms_ CMakeFiles/Charms.dir/main.c.o CMakeFiles/Charms.dir/src/terminfo.c.o
+build Charms: C_EXECUTABLE_LINKER__Charms_ CMakeFiles/Charms.dir/main.c.o CMakeFiles/Charms.dir/src/charm.c.o CMakeFiles/Charms.dir/src/terminfo.c.o
   OBJECT_DIR = CMakeFiles/Charms.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -76,7 +82,7 @@ build Charms: C_EXECUTABLE_LINKER__Charms_ CMakeFiles/Charms.dir/main.c.o CMakeF
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/fernando/Git/sine_nomine && /usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd /home/fernando/Git/charms && /usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -87,7 +93,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/fernando/Git/sine_nomine && /usr/bin/cmake --regenerate-during-build -S/home/fernando/Git/sine_nomine -B/home/fernando/Git/sine_nomine
+  COMMAND = cd /home/fernando/Git/charms && /usr/bin/cmake --regenerate-during-build -S/home/fernando/Git/charms -B/home/fernando/Git/charms
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -103,7 +109,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 
 #############################################
-# Folder: /home/fernando/Git/sine_nomine
+# Folder: /home/fernando/Git/charms
 
 build all: phony Charms
 
