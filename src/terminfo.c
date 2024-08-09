@@ -6,7 +6,7 @@
 #include"charm.h"
 
 int parse_env_integer(const char* integerString, long int *result);
-int get_term_dimensions(struct chterm *term);
+int get_terminal_dimensions(struct chterm *term);
 
 /**
  * Starting with the terminfo API
@@ -16,13 +16,12 @@ int evaluate_term(struct chterm *term){
     const char* termtype = getenv("TERM");
     printf("%s\n", termtype);
     term->termtype = termtype;
-    get_term_dimensions(term);
+    get_terminal_dimensions(term);
     return 0;
 }
 
-int get_term_dimensions(struct chterm *term){
+int get_terminal_dimensions(struct chterm *term){
     const char* rows = getenv("LINES");
-    printf("%s rows\n", rows);
 
     long int ret;
     int status;
@@ -31,31 +30,41 @@ int get_term_dimensions(struct chterm *term){
         if (status == 0){
             term->rows = (unsigned int) ret;
         }else{
-            return -1;
+            printf("Unable to parse row count from env variable");
         }
     }    
 
     status = 0;
     const char* columns = getenv("COLUMNS"); 
-    printf("%s columns\n", columns);
     if (columns != NULL){
         status = parse_env_integer(columns, &ret);
         if (status == 0){
             term->columns = (unsigned int) ret;
         }else {
-            return -1;
+            printf("Unable to parse columns count from env variable");
         }
+    }
+
+    if (rows != NULL && columns != NULL){
+        printf("%s rows\n", rows);
+        printf("%s columns\n", columns);
+        return 0;
     }
     
     //This terminal does not export dimension info
-    if (rows == NULL || columns == NULL){
-        printf("Falling back to ioctl");
-        struct winsize wsize;
-        ioctl(term->fd, TIOCGWINSZ, &wsize); 
-        printf("Got rows: %d\n", wsize.ws_col);
+    printf("Falling back to ioctl\n");
+    struct winsize wsize;
+    status = 0;
+    status = ioctl(term->fd, TIOCGWINSZ, &wsize); 
+    if (status == 0){
+        printf("Got rows: %d\n", wsize.ws_row);
         printf("Got columns: %d\n", wsize.ws_col);
-
+        term->columns = wsize.ws_col;
+        term->rows = wsize.ws_row;
+    }else{
+        printf("Unable to determine terminal size via ioctl: %s\n", strerror(errno));
     }
+
     return 0;
 }
 
