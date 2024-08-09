@@ -10,11 +10,11 @@ int enterTerminalAltBuffer(int fd);
 int leaveterminalAltBuffer(int fd);
 int prepareTerminal(int fd, struct termios *data);
 int restoreTerminal(int fd, struct termios *data);
-int clear(int fd);
+int clearTerminal(int fd);
 int writeCommand(char* command, int fd);
 int open_term_fd();
 
-int init_term(struct chterm* term){
+int charm_initialize(struct chterm* term){
     
     int ttyFd = open_term_fd();
     if (ttyFd < 0) {
@@ -33,7 +33,6 @@ int init_term(struct chterm* term){
 
     term->fd = ttyFd;
     evaluate_term(term);
-    return 0;
 
     struct termios termiosData;
     ret = tcgetattr(ttyFd, &termiosData);
@@ -43,12 +42,15 @@ int init_term(struct chterm* term){
     }
     struct termios preparedTermios;
     memcpy(&preparedTermios, &termiosData, sizeof(struct termios));
+    memcpy(&(term->termiosData), &termiosData, sizeof(struct termios));
     prepareTerminal(ttyFd, &preparedTermios);
-    while(1){
-        sleep(1);
-    }
-    restoreTerminal(ttyFd, &termiosData);
-    close(ttyFd);
+    return 0;
+}
+
+void charm_terminate(struct chterm *term){
+    restoreTerminal(term->fd, &(term->termiosData));
+    close(term->fd);
+
 }
 
 
@@ -70,7 +72,7 @@ int prepareTerminal(int fd, struct termios *data){
     data->c_oflag = OPOST;
     tcsetattr(fd, TCSAFLUSH, data);
     enterTerminalAltBuffer(fd);
-    clear(fd);
+    clearTerminal(fd);
     
     return 0;
 }
@@ -82,7 +84,7 @@ int restoreTerminal(int fd, struct termios *data){
     return 0;
 }
 
-int clear(int fd){
+int clearTerminal(int fd){
     int written;
     //write(fd, "\x1B[2J", strlen("\x1B[2J"));
     writeCommand("\x1B[2J", fd);
