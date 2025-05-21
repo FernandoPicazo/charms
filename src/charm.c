@@ -5,6 +5,7 @@
 #include<termios.h>
 #include<unistd.h>
 #include"charm.h"
+#include"logger.h"
 
 int enterTerminalAltBuffer(int fd);
 int leaveterminalAltBuffer(int fd);
@@ -18,11 +19,11 @@ int charm_initialize(struct chterm* term){
     
     int ttyFd = open_term_fd();
     if (ttyFd < 0) {
-        perror("Unable to open file descriptor");
+        LOG_PERROR("Unable to open file descriptor");
         exit(1);
     }
 
-    printf("Valid tty detected\n");
+    LOG_INFO("Valid tty detected");
     //Ensure no weirdness going on
     int ret;
     ret = isatty(ttyFd);
@@ -57,16 +58,17 @@ void charm_terminate(struct chterm *term){
 int open_term_fd(){
     char* tty = ttyname(STDIN_FILENO);
     if (tty == NULL) {
-        perror("Unable to acquire current terminal file descriptor");
+        LOG_PERROR("Unable to acquire current terminal file descriptor");
         exit(1);
     }
-    printf("TTY Name %s\n", tty);
+    LOG_INFO("TTY Name %s", tty);
     
     int ttyFd = open(tty, O_RDWR);
     return ttyFd;
 }
 
 int prepareTerminal(int fd, struct termios *data){
+    return 0;
     data->c_lflag = ECHO | ISIG | ICANON ;
     data->c_iflag = IXON | ICRNL | BRKINT | INPCK | ISTRIP;
     data->c_oflag = OPOST;

@@ -4,6 +4,7 @@
 #include<string.h>
 #include<sys/ioctl.h>
 #include"charm.h"
+#include"logger.h"
 
 int parse_env_integer(const char* integerString, long int *result);
 int get_terminal_dimensions(struct chterm *term);
@@ -14,7 +15,7 @@ int get_terminal_dimensions(struct chterm *term);
 **/
 int evaluate_term(struct chterm *term){
     const char* termtype = getenv("TERM");
-    printf("%s\n", termtype);
+    LOG_INFO("%s", termtype);
     term->termtype = termtype;
     get_terminal_dimensions(term);
     return 0;
@@ -30,9 +31,11 @@ int get_terminal_dimensions(struct chterm *term){
         if (status == 0){
             term->rows = (unsigned int) ret;
         }else{
-            printf("Unable to parse row count from env variable");
+            LOG_ERROR("Unable to parse row count from env variable");
         }
-    }    
+    }else {
+        LOG_ERROR("Unable to get rows from env variable");
+    }
 
     status = 0;
     const char* columns = getenv("COLUMNS"); 
@@ -41,28 +44,28 @@ int get_terminal_dimensions(struct chterm *term){
         if (status == 0){
             term->columns = (unsigned int) ret;
         }else {
-            printf("Unable to parse columns count from env variable");
+            LOG_ERROR("Unable to parse columns count from env variable");
         }
     }
 
     if (rows != NULL && columns != NULL){
-        printf("%s rows\n", rows);
-        printf("%s columns\n", columns);
+        LOG_INFO("%s rows", rows);
+        LOG_INFO("%s columns", columns);
         return 0;
     }
     
     //This terminal does not export dimension info
-    printf("Falling back to ioctl\n");
+    LOG_INFO("Falling back to ioctl\n");
     struct winsize wsize;
     status = 0;
     status = ioctl(term->fd, TIOCGWINSZ, &wsize); 
     if (status == 0){
-        printf("Got rows: %d\n", wsize.ws_row);
-        printf("Got columns: %d\n", wsize.ws_col);
+        LOG_INFO("Got rows: %d\n", wsize.ws_row);
+        LOG_INFO("Got columns: %d\n", wsize.ws_col);
         term->columns = wsize.ws_col;
         term->rows = wsize.ws_row;
     }else{
-        printf("Unable to determine terminal size via ioctl: %s\n", strerror(errno));
+        LOG_ERROR("Unable to determine terminal size via ioctl: %s\n", strerror(errno));
     }
 
     return 0;
@@ -83,7 +86,7 @@ int parse_env_integer(const char* integerString, long int *result){
             return -1;
         }
         if (errno != 0){
-            printf("Unable to parse errors %s\n", strerror(errno));
+            LOG_PERROR("Unable to parse errors %s\n", strerror(errno));
             return -1;
         }
     }
